@@ -6,7 +6,7 @@ After that, these data will be represented in a dashboard
 
 Services:
 
-- Extraction: Load en memory a csv file from my bank account
+- Extraction: Load en memory a csv file from a bank account
 - Transformation: Normalized csv data
 - Categorize: Set categories to each expense (In progress)
 - Load: Load data into a database
