@@ -1,0 +1,9 @@
+Transaction Date,Transaction Type,Sort Code,Account Number,Transaction Description,Debit Amount,Credit Amount,Balance
+29/07/2016,debit_card,'444-444-444,11111,Supermarket,19.2,,925.12
+29/07/2016,bla bla,'444-444-444,22222,Paco Smith,,90,1000
+27/03/2017,BBB,'444-444-444,7777777777,supermarket,4.55,,204.48
+27/03/2017,BBB,'444-444-444,7777777777,supermarket,30.88,,209.03
+27/03/2017,DDD,'444-444-444,7777777777,internet ,33.24,,251.2
+27/03/2017,BBB,'444-444-444,7777777777,cab,11.29,,239.91
+24/03/2017,AAA,'444-444-444,7777777777,atm,40,,284.44
+23/03/2017,BBB,'444-444-444,7777777777,cafe,1223.74,,324.44

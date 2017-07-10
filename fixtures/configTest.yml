@@ -1,0 +1,5 @@
+user_db: "root"
+pass_db: "mySecretPass"
+database: "mydatabase"
+file_path: "file.csv"
+

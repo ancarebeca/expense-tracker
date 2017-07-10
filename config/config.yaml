@@ -1,0 +1,5 @@
+user_db: "my_db_user"
+pass_db: "my_db_password"
+database: "test_expenses"
+file_path: "my_bank_statement"
+
