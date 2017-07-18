@@ -1,4 +1,4 @@
-all: install test build
+all: build run
 
 install:
 	glide install
@@ -14,4 +14,7 @@ run:
 
 clean:
 	rm ./expense-tracker
+
+test:
+	ginkgo -r
 

@@ -40,10 +40,25 @@ func main() {
 		panic(err.Error())
 	}
 
+	c := services.Categorize{
+		Categories:   make(map[string]string),
+		CategoryFile: "config/categories.yaml",
+	}
+
+	err = c.LoadCategories()
+	if err != nil {
+		panic(err.Error())
+	}
+
+	statementsCategorise, err := c.Categorise(statementsNormalized)
+	if err != nil {
+		panic(err.Error())
+	}
+
 	l := services.Loader{
 		DB: db,
 	}
 
-	l.Loader(statementsNormalized)
+	l.Loader(statementsCategorise)
 
 }

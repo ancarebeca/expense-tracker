@@ -7,10 +7,10 @@ import (
 )
 
 type Conf struct {
-	UserDb   string `yaml:"user_db"`
-	PassDb   string `yaml:"pass_db"`
-	Database string `yaml:"database"`
-	FilePath string `yaml:"file_path"`
+	UserDb     string `yaml:"user_db"`
+	PassDb     string `yaml:"pass_db"`
+	Database   string `yaml:"database"`
+	FilePath   string `yaml:"file_path"`
 }
 
 func (c *Conf) LoadConfig(path string) error {

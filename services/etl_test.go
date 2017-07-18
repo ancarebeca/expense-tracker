@@ -24,7 +24,7 @@ var _ = Describe("Csv file is processed and return statements", func() {
 
 		s, err := csvReader.ReadFromCsv(statements)
 		Expect(err).NotTo(HaveOccurred())
-		Expect(len(s)).To(Equal(8))
+		Expect(len(s)).To(Equal(17))
 		Expect(s[0].TransactionDescription).To(Equal("Supermarket"))
 		Expect(s[0].Balance).To(Equal(925.12))
 		Expect(s[0].TransactionDate).To(Equal("29/07/2016"))
@@ -136,6 +136,85 @@ var _ = Describe("Csv file is processed and return statements", func() {
 		})
 	})
 
+	Describe("Expenses are categorise by description ", func() {
+
+		It("loads categories from yaml file into a map structure", func() {
+			c := services.Categorize{
+				Categories:   make(map[string]string),
+				CategoryFile: "../fixtures/categoriesTest.yaml",
+			}
+			err := c.LoadCategories()
+			Expect(err).NotTo(HaveOccurred())
+
+			Expect(c.Categories["virgin"]).To(Equal("bills"))
+			Expect(c.Categories["uber"]).To(Equal("transport"))
+			Expect(c.Categories["sainsburys"]).To(Equal("groceries"))
+		})
+
+		It("returns an error is something goes wrong loading categories", func() {
+			c := services.Categorize{
+				Categories:   make(map[string]string),
+				CategoryFile: "../fixtures/wrong-categoriesTest.yaml",
+			}
+			err := c.LoadCategories()
+			Expect(err).To(HaveOccurred())
+		})
+
+		It("returns a category depending on key value introduced", func() {
+			c := services.Categorize{
+				CategoryFile: "../fixtures/categoriesTest.yaml",
+				Categories:   make(map[string]string),
+			}
+			err := c.LoadCategories()
+			Expect(err).NotTo(HaveOccurred())
+
+			category, err := c.GetCategory("sainsburys supermarket")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(category).To(Equal("groceries"))
+
+			category, err = c.GetCategory("SAINSBURYS supermarket")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(category).To(Equal("groceries"))
+
+			category, err = c.GetCategory("water park")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(category).To(Equal("entertainment"))
+
+			category, err = c.GetCategory("cafe")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(category).To(Equal("general"))
+
+			category, err = c.GetCategory("THAMES WATER")
+			Expect(err).NotTo(HaveOccurred())
+			Expect(category).To(Equal("bills"))
+
+		})
+
+		It("categorise statements", func() {
+			c := services.Categorize{
+				Categories:   make(map[string]string),
+				CategoryFile: "../fixtures/categoriesTest.yaml",
+			}
+			statements := []*services.Statement{
+				{
+					TransactionDate:        "2016-07-29",
+					TransactionType:        "ddd",
+					TransactionDescription: "thames water 5191374174",
+					DebitAmount:            2,
+					CreditAmount:           1,
+					Balance:                4.6,
+				},
+			}
+
+			err := c.LoadCategories()
+			Expect(err).NotTo(HaveOccurred())
+
+			s, err := c.Categorise(statements)
+			Expect(err).NotTo(HaveOccurred())
+			Expect(s[0].Category).To(Equal("bills"))
+		})
+	})
+
 	Describe("A csv file is processed, transformed and loaded in a database", func() {
 		var (
 			conf config.Conf
@@ -144,10 +223,10 @@ var _ = Describe("Csv file is processed and return statements", func() {
 
 		BeforeEach(func() {
 			var err error
-			conf.FilePath = "../fixtures/valid_csv.csv"
 			conf.UserDb = "root"
 			conf.PassDb = "root"
 			conf.Database = "test_expenses"
+			conf.FilePath = "../fixtures/valid_csv.csv"
 
 			dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
 			db, err = sql.Open("mysql", dataSourceName)
@@ -172,14 +251,26 @@ var _ = Describe("Csv file is processed and return statements", func() {
 
 			csvStatements, err := csvReader.ReadFromCsv(statements)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(len(csvStatements)).To(Equal(8))
+			Expect(len(csvStatements)).To(Equal(17))
 
 			t := services.Transformer{}
 			statementsNormalized, err := t.Transform(csvStatements)
 			Expect(err).NotTo(HaveOccurred())
-			Expect(len(statementsNormalized)).To(Equal(8))
+			Expect(len(statementsNormalized)).To(Equal(17))
 			Expect(statementsNormalized[0].TransactionDate).To(Equal("2016-07-29"), "Transforms TransactionDate")
-			l.Loader(statementsNormalized)
+
+			c := services.Categorize{
+				Categories:   make(map[string]string),
+				CategoryFile: "../fixtures/categoriesTest.yaml",
+			}
+
+			err = c.LoadCategories()
+			Expect(err).NotTo(HaveOccurred())
+
+			statementsCategorise, err := c.Categorise(statementsNormalized)
+			Expect(err).NotTo(HaveOccurred())
+
+			l.Loader(statementsCategorise)
 
 			// query
 			dbStatements := []*services.Statement{}
@@ -226,7 +317,7 @@ var _ = Describe("Csv file is processed and return statements", func() {
 				dbStatements = append(dbStatements, &s)
 			}
 
-			Expect(len(dbStatements)).To(Equal(8))
+			Expect(len(dbStatements)).To(Equal(17))
 			Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
 			Expect(dbStatements[0].DebitAmount).To(Equal(19.2))
 			Expect(dbStatements[0].Balance).To(Equal(925.12))
@@ -234,6 +325,7 @@ var _ = Describe("Csv file is processed and return statements", func() {
 			Expect(dbStatements[0].CreditAmount).To(Equal(float64(0)))
 			Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
 			Expect(dbStatements[1].CreditAmount).To(Equal(float64(90)))
+			Expect(dbStatements[3].Category).To(Equal("bills"))
 		})
 
 	})

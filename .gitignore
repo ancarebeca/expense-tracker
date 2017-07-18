@@ -23,4 +23,6 @@ expense-tracker_suite_test.go
 input/
 vendor/
 TODO
+config/config.yaml
+config/categories.yaml
 
