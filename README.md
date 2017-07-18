@@ -1,4 +1,4 @@
-#Expense-tracker
+# Expense-tracker
 
 Given a csv with the last summary of a bank account, it organises this expenses in categories 
 (bills, shopping, eating out …) and then it will be saved into an Expense database.  
