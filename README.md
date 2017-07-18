@@ -37,7 +37,7 @@ Services:
 
 You have to link some relevant word from your bank statements with one category.
 For example if in your bank statement in the description field you have 'Tfl.gov.uk/cp' you 
-could categorise 'tfl' that as transport. 
+could categorise 'tfl' as transport. 
 
 ```
 tfl: transport
