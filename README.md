@@ -60,3 +60,8 @@ thames water: bills
 ```
 ###### This project is still in progress 
 
+Todo: 
+- Transformer logic is coupled to a specific csv file. Make it generic
+- Parser logic is coupled to a specific data input. Make it generic
+- Improve error handler
+- Improve performance

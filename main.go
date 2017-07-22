@@ -11,8 +11,6 @@ import (
 var path = "config/config.yaml"
 
 func main() {
-	statements := []*services.Statement{}
-
 	conf := config.Conf{}
 	conf.LoadConfig(path)
 
@@ -20,13 +18,16 @@ func main() {
 		Conf: conf,
 	}
 
-	csvStatements, err := csvReader.ReadFromCsv(statements)
+	data, err := csvReader.ReadCsv()
 	if err != nil {
 		panic(err.Error())
 	}
 
 	t := services.Transformer{}
-	statementsNormalized, err := t.Transform(csvStatements)
+	dataNormalized, err := t.Transform(data)
+
+	p := services.Parse{}
+	statements, err := p.Parser(dataNormalized)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -50,7 +51,7 @@ func main() {
 		panic(err.Error())
 	}
 
-	statementsCategorise, err := c.Categorise(statementsNormalized)
+	statementsCategorise, err := c.Categorise(statements)
 	if err != nil {
 		panic(err.Error())
 	}
