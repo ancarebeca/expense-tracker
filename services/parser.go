@@ -11,7 +11,6 @@ type Parse struct {
 
 //Todo: This logic is coupled to csv file. Make it generic
 func (p *Parse) Parser(data [][]string) ([]*model.Statement, error) {
-
 	statements := []*model.Statement{}
 
 	for i := range data {
@@ -45,7 +44,6 @@ func (p *Parse) Parser(data [][]string) ([]*model.Statement, error) {
 }
 
 func (p *Parse) stringToFloat(value string) (float64, error) {
-
 	if value == "" {
 		value = "0"
 	}

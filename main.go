@@ -32,15 +32,6 @@ func main() {
 		panic(err.Error())
 	}
 
-	var db *sql.DB
-
-	dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
-	db, err = sql.Open("mysql", dataSourceName)
-
-	if err != nil {
-		panic(err.Error())
-	}
-
 	c := services.Categorize{
 		Categories:   make(map[string]string),
 		CategoryFile: "config/categories.yaml",
@@ -52,6 +43,15 @@ func main() {
 	}
 
 	statementsCategorise, err := c.Categorise(statements)
+	if err != nil {
+		panic(err.Error())
+	}
+
+	var db *sql.DB
+
+	dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
+	db, err = sql.Open("mysql", dataSourceName)
+
 	if err != nil {
 		panic(err.Error())
 	}

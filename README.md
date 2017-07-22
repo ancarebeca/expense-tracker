@@ -65,3 +65,4 @@ Todo:
 - Parser logic is coupled to a specific data input. Make it generic
 - Improve error handler
 - Improve performance
+- Refactor main

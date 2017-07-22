@@ -31,8 +31,7 @@ func (c *Categorize) LoadCategories() error {
 	return nil
 }
 
-func (c *Categorize) GetCategory(keyword string) (string, error) {
-
+func (c *Categorize) getCategory(keyword string) (string, error) {
 	for k, v := range c.Categories {
 		kLower := strings.ToLower(k)
 		if strings.Contains(strings.ToLower(keyword), kLower) {
@@ -44,7 +43,7 @@ func (c *Categorize) GetCategory(keyword string) (string, error) {
 
 func (c *Categorize) Categorise(statements []*model.Statement) ([]*model.Statement, error) {
 	for _, s := range statements {
-		category, err := c.GetCategory(s.TransactionDescription)
+		category, err := c.getCategory(s.TransactionDescription)
 		if err != nil {
 			fmt.Printf("Statement %v cannot be categorise: %s", s, err.Error())
 			return nil, err

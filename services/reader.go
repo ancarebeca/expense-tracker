@@ -7,16 +7,6 @@ import (
 	"encoding/csv"
 )
 
-type Statement struct {
-	TransactionDate        string  `csv:"Transaction Date"`
-	TransactionType        string  `csv:"Transaction Type"`
-	TransactionDescription string  `csv:"Transaction Description"`
-	Category               string  `csv:"Category"`
-	DebitAmount            float64 `csv:"Debit Amount"`
-	CreditAmount           float64 `csv:"Credit Amount"`
-	Balance                float64 `csv:"Balance"`
-}
-
 type CsvReader struct {
 	Conf config.Conf
 }

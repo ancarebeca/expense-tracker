@@ -25,7 +25,6 @@ func (l *Loader) Loader(statements []*model.Statement) {
 }
 
 func (l *Loader) create(s *model.Statement) error {
-
 	_, err := l.DB.Exec("INSERT INTO `statements` (`transaction_date`, `transaction_type`, `transaction_description`, `debit_amount`, `credit_amount`, `balance`, `category`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		s.TransactionDate,
 		s.TransactionType,

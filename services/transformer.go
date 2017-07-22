@@ -18,21 +18,21 @@ func (t *Transformer) Transform(data [][]string) ([][]string, error) {
 
 	for i := range data {
 
-		transactionDate, err := t.TransformDate(data[i][0])
+		transactionDate, err := t.transformDate(data[i][0])
 		if err != nil {
 			return nil, err
 		}
 
 		data[i][0] = transactionDate
 
-		transactionDescription := t.CleanString(data[i][4])
+		transactionDescription := t.cleanString(data[i][4])
 		data[i][4] = transactionDescription
 	}
 
 	return data, nil
 }
 
-func (t *Transformer) TransformDate(date string) (string, error) {
+func (t *Transformer) transformDate(date string) (string, error) {
 
 	stringOutput, err := time.Parse(layoutInput, date)
 
@@ -43,7 +43,7 @@ func (t *Transformer) TransformDate(date string) (string, error) {
 	return stringOutput.Format(layoutOutput), nil
 }
 
-func (t *Transformer) CleanString(value string) string {
+func (t *Transformer) cleanString(value string) string {
 	valueLower := strings.ToLower(value)
 	return t.standardizeSpaces(valueLower)
 }
