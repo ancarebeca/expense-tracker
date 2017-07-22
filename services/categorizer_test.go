@@ -32,36 +32,6 @@ var _ = Describe("Expenses are categorise by description ", func() {
 		Expect(err).To(HaveOccurred())
 	})
 
-	It("returns a category depending on key value introduced", func() {
-		c := services.Categorize{
-			CategoryFile: "../fixtures/categoriesTest.yaml",
-			Categories:   make(map[string]string),
-		}
-		err := c.LoadCategories()
-		Expect(err).NotTo(HaveOccurred())
-
-		category, err := c.GetCategory("sainsburys supermarket")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(category).To(Equal("groceries"))
-
-		category, err = c.GetCategory("SAINSBURYS supermarket")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(category).To(Equal("groceries"))
-
-		category, err = c.GetCategory("water park")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(category).To(Equal("entertainment"))
-
-		category, err = c.GetCategory("cafe")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(category).To(Equal("general"))
-
-		category, err = c.GetCategory("THAMES WATER")
-		Expect(err).NotTo(HaveOccurred())
-		Expect(category).To(Equal("bills"))
-
-	})
-
 	It("categorise statements", func() {
 		c := services.Categorize{
 			Categories:   make(map[string]string),

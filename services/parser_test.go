@@ -19,7 +19,7 @@ var _ = Describe("Parser string into statement", func() {
 				"Description 1",
 				"19.2",
 				"",
-				"925.12",
+				"3.12",
 			},
 			{
 				"29/07/2016",
@@ -29,7 +29,7 @@ var _ = Describe("Parser string into statement", func() {
 				"Description 2",
 				"19.2",
 				"",
-				"925.12",
+				"3.12",
 			},
 		}
 
@@ -54,7 +54,7 @@ var _ = Describe("Parser string into statement", func() {
 				"Description 1",
 				"error",
 				"",
-				"925.12",
+				"3.12",
 			},
 		}
 		p := services.Parse{}
@@ -74,7 +74,7 @@ var _ = Describe("Parser string into statement", func() {
 				"Description 1",
 				"error",
 				"",
-				"925.12",
+				"3.12",
 			},
 		}
 		p := services.Parse{}

@@ -10,7 +10,7 @@ import (
 
 var _ = Describe("Reading csv file", func() {
 
-	It("reads a valid csv and returns a statements", func() {
+	FIt("reads a valid csv and returns a statements", func() {
 		var conf config.Conf
 
 		conf.FilePath = "../fixtures/valid_csv.csv"

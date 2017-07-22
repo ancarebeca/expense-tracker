@@ -33,7 +33,6 @@ func (t *Transformer) Transform(data [][]string) ([][]string, error) {
 }
 
 func (t *Transformer) transformDate(date string) (string, error) {
-
 	stringOutput, err := time.Parse(layoutInput, date)
 
 	if err != nil {
