@@ -14,6 +14,9 @@ expense-tracker
 # Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
 .glide/
 
+config/config.yaml
+config/categories.yaml
+
 vendor/*
 
 input/*
@@ -23,6 +26,5 @@ expense-tracker_suite_test.go
 input/
 vendor/
 TODO
-config/config.yaml
-config/categories.yaml
+
 
