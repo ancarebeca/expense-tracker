@@ -1,19 +1,23 @@
 package services
 
 import (
-	"time"
 	"fmt"
 	"strings"
+	"time"
 )
 
-type Transformer struct{}
+type DataTransformer struct{}
 
 var layoutInput = "02/01/2006"
 var layoutOutput = "2006-01-02"
 
+//go:generate counterfeiter . Transformer
+type Transformer interface {
+	Transform(data [][]string) ([][]string, error)
+}
+
 //Todo: This logic is coupled to csv file. Make it generic
-func (t *Transformer) Transform(data [][]string) ([][]string, error) {
-	//header := data[0]
+func (t *DataTransformer) Transform(data [][]string) ([][]string, error) {
 	data = append(data[:0], data[0+1:]...)
 
 	for i := range data {
@@ -32,7 +36,7 @@ func (t *Transformer) Transform(data [][]string) ([][]string, error) {
 	return data, nil
 }
 
-func (t *Transformer) transformDate(date string) (string, error) {
+func (t *DataTransformer) transformDate(date string) (string, error) {
 	stringOutput, err := time.Parse(layoutInput, date)
 
 	if err != nil {
@@ -42,11 +46,11 @@ func (t *Transformer) transformDate(date string) (string, error) {
 	return stringOutput.Format(layoutOutput), nil
 }
 
-func (t *Transformer) cleanString(value string) string {
+func (t *DataTransformer) cleanString(value string) string {
 	valueLower := strings.ToLower(value)
 	return t.standardizeSpaces(valueLower)
 }
 
-func (t *Transformer) standardizeSpaces(s string) string {
+func (t *DataTransformer) standardizeSpaces(s string) string {
 	return strings.Join(strings.Fields(s), " ")
 }

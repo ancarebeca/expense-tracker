@@ -1,8 +1,8 @@
 package services
 
 import (
-	"fmt"
 	"database/sql"
+	"fmt"
 	"github.com/ancarebeca/expense-tracker/model"
 )
 
@@ -11,11 +11,16 @@ type DatabaseQueryConnection interface {
 	Exec(query string, args ...interface{}) (sql.Result, error)
 }
 
-type Loader struct {
+//go:generate counterfeiter . StatementsLoader
+type StatementsLoader interface {
+	Load(statements []*model.Statement)
+}
+
+type LoadDb struct {
 	DB DatabaseQueryConnection
 }
 
-func (l *Loader) Loader(statements []*model.Statement) {
+func (l *LoadDb) Load(statements []*model.Statement) {
 	for _, s := range statements {
 		err := l.create(s)
 		if err != nil {
@@ -24,7 +29,7 @@ func (l *Loader) Loader(statements []*model.Statement) {
 	}
 }
 
-func (l *Loader) create(s *model.Statement) error {
+func (l *LoadDb) create(s *model.Statement) error {
 	_, err := l.DB.Exec("INSERT INTO `statements` (`transaction_date`, `transaction_type`, `transaction_description`, `debit_amount`, `credit_amount`, `balance`, `category`) VALUES (?, ?, ?, ?, ?, ?, ?)",
 		s.TransactionDate,
 		s.TransactionType,

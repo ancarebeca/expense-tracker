@@ -30,13 +30,13 @@ var _ = Describe("Data is loaded into the final target database ", func() {
 		}
 		fakeDatabaseConnection := &servicesfakes.FakeDatabaseQueryConnection{}
 
-		l := services.Loader{
+		l := services.LoadDb{
 			DB: fakeDatabaseConnection,
 		}
 
 		fakeDatabaseConnection.ExecReturns(result, nil)
 
-		l.Loader(statements)
+		l.Load(statements)
 		Expect(fakeDatabaseConnection.ExecCallCount()).To(Equal(1))
 
 	})

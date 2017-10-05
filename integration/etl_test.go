@@ -8,6 +8,7 @@ import (
 	_ "github.com/go-sql-driver/mysql"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
+	"github.com/ancarebeca/expense-tracker/model"
 )
 
 var _ = Describe("A csv file is processed, transformed and loaded in a database", func() {
@@ -34,47 +35,34 @@ var _ = Describe("A csv file is processed, transformed and loaded in a database"
 	})
 
 	It("e2e", func() {
-		csvReader := services.CsvReader{
+		r := services.CsvReader{
 			Conf: conf,
 		}
 
-		l := services.Loader{
+		l := services.LoadDb{
 			DB: db,
 		}
 
-		data, err := csvReader.ReadCsv()
-		Expect(err).NotTo(HaveOccurred())
-		Expect(len(data)).To(Equal(18))
-
-		t := services.Transformer{}
-		dataNormalized, err := t.Transform(data)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(len(dataNormalized)).To(Equal(17))
-		Expect(dataNormalized[0][0]).To(Equal("2016-07-29"), "Transforms TransactionDate")
-
-		p := services.Parse{}
-		statements, err := p.Parser(dataNormalized)
-
-		Expect(err).NotTo(HaveOccurred())
-		Expect(len(statements)).To(Equal(17))
-
-
+		t := services.DataTransformer{}
+		p := services.DataParser{}
 
 		c := services.Categorize{
 			Categories:   make(map[string]string),
 			CategoryFile: "../fixtures/categoriesTest.yaml",
 		}
 
-		err = c.LoadCategories()
-		Expect(err).NotTo(HaveOccurred())
-
-		statementsCategorise, err := c.Categorise(statements)
-		Expect(err).NotTo(HaveOccurred())
-
-		l.Loader(statementsCategorise)
+		etl := services.Etl{
+			conf,
+			&r,
+			&t,
+			&p,
+			&c,
+			&l,
+		}
+		etl.Run()
 
 		// query
-		dbStatements := []*services.Statement{}
+		dbStatements := []*model.Statement{}
 
 		rows, err := db.Query("SELECT * FROM statements")
 
@@ -106,7 +94,7 @@ var _ = Describe("A csv file is processed, transformed and loaded in a database"
 			)
 			Expect(err).NotTo(HaveOccurred())
 
-			s := services.Statement{
+			s := model.Statement{
 				TransactionDate:        transaction_date,
 				TransactionType:        transaction_type,
 				TransactionDescription: transaction_description,

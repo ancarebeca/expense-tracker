@@ -44,7 +44,7 @@ var _ = Describe("csv data are transformed into a proper format for the purposes
 			},
 		}
 
-		t := services.Transformer{}
+		t := services.DataTransformer{}
 		inputNormalized, err := t.Transform(input)
 		Expect(err).NotTo(HaveOccurred())
 
@@ -88,7 +88,7 @@ var _ = Describe("csv data are transformed into a proper format for the purposes
 		}
 
 
-		t := services.Transformer{}
+		t := services.DataTransformer{}
 		_, err := t.Transform(input)
 		Expect(err).To(HaveOccurred())
 	})

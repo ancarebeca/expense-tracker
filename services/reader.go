@@ -1,14 +1,19 @@
 package services
 
 import (
-	"os"
+	"encoding/csv"
 	"fmt"
 	"github.com/ancarebeca/expense-tracker/config"
-	"encoding/csv"
+	"os"
 )
 
 type CsvReader struct {
 	Conf config.Conf
+}
+
+//go:generate counterfeiter . Reader
+type Reader interface {
+	ReadCsv() ([][]string, error)
 }
 
 func (c *CsvReader) ReadCsv() ([][]string, error) {

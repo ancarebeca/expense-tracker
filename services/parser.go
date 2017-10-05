@@ -6,11 +6,16 @@ import (
 	"fmt"
 )
 
-type Parse struct {
+type DataParser struct {
+}
+
+//go:generate counterfeiter . Parser
+type Parser interface {
+	Parse(data [][]string) ([]*model.Statement, error)
 }
 
 //Todo: This logic is coupled to csv file. Make it generic
-func (p *Parse) Parser(data [][]string) ([]*model.Statement, error) {
+func (p *DataParser) Parse(data [][]string) ([]*model.Statement, error) {
 	statements := []*model.Statement{}
 
 	for i := range data {
@@ -43,7 +48,7 @@ func (p *Parse) Parser(data [][]string) ([]*model.Statement, error) {
 	return statements, nil
 }
 
-func (p *Parse) stringToFloat(value string) (float64, error) {
+func (p *DataParser) stringToFloat(value string) (float64, error) {
 	if value == "" {
 		value = "0"
 	}

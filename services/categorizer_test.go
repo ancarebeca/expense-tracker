@@ -15,7 +15,7 @@ var _ = Describe("Expenses are categorise by description ", func() {
 			Categories:   make(map[string]string),
 			CategoryFile: "../fixtures/categoriesTest.yaml",
 		}
-		err := c.LoadCategories()
+		err := c.Load()
 		Expect(err).NotTo(HaveOccurred())
 
 		Expect(c.Categories["virgin"]).To(Equal("bills"))
@@ -28,7 +28,7 @@ var _ = Describe("Expenses are categorise by description ", func() {
 			Categories:   make(map[string]string),
 			CategoryFile: "../fixtures/wrong-categoriesTest.yaml",
 		}
-		err := c.LoadCategories()
+		err := c.Load()
 		Expect(err).To(HaveOccurred())
 	})
 
@@ -48,7 +48,7 @@ var _ = Describe("Expenses are categorise by description ", func() {
 			},
 		}
 
-		err := c.LoadCategories()
+		err := c.Load()
 		Expect(err).NotTo(HaveOccurred())
 
 		s, err := c.Categorise(statements)

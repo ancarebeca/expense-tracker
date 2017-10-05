@@ -11,6 +11,8 @@ import (
 var path = "config/config.yaml"
 
 func main() {
+	var db *sql.DB
+
 	conf := config.Conf{}
 	conf.LoadConfig(path)
 
@@ -18,48 +20,32 @@ func main() {
 		Conf: conf,
 	}
 
-	data, err := csvReader.ReadCsv()
-	if err != nil {
-		panic(err.Error())
-	}
+	transformer := services.DataTransformer{}
 
-	t := services.Transformer{}
-	dataNormalized, err := t.Transform(data)
+	parser := services.DataParser{}
 
-	p := services.Parse{}
-	statements, err := p.Parser(dataNormalized)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	c := services.Categorize{
+	categorizer := services.Categorize{
 		Categories:   make(map[string]string),
 		CategoryFile: "config/categories.yaml",
 	}
 
-	err = c.LoadCategories()
-	if err != nil {
-		panic(err.Error())
-	}
-
-	statementsCategorise, err := c.Categorise(statements)
-	if err != nil {
-		panic(err.Error())
-	}
-
-	var db *sql.DB
-
 	dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
-	db, err = sql.Open("mysql", dataSourceName)
+	db, err := sql.Open("mysql", dataSourceName)
 
 	if err != nil {
 		panic(err.Error())
 	}
 
-	l := services.Loader{
+	loader := services.LoadDb{
 		DB: db,
 	}
-
-	l.Loader(statementsCategorise)
-
+	etl := services.Etl{
+		conf,
+		&csvReader,
+		&transformer,
+		&parser,
+		&categorizer,
+		&loader,
+	}
+	etl.Run()
 }

@@ -10,12 +10,18 @@ import (
 
 const general = "general"
 
+//go:generate counterfeiter . CategoriesLoader
+type CategoriesLoader interface {
+	Load() error
+	Categorise(statements []*model.Statement) ([]*model.Statement, error)
+}
+
 type Categorize struct {
 	Categories   map[string]string
 	CategoryFile string
 }
 
-func (c *Categorize) LoadCategories() error {
+func (c *Categorize) Load() error {
 	yamlFile, err := ioutil.ReadFile(c.CategoryFile)
 	if err != nil {
 		fmt.Println(err.Error())

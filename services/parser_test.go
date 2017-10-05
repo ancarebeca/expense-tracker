@@ -6,7 +6,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Parser string into statement", func() {
+var _ = Describe("Parse string into statement", func() {
 
 	It("parser a string statement into a model statement", func() {
 
@@ -33,8 +33,8 @@ var _ = Describe("Parser string into statement", func() {
 			},
 		}
 
-		p := services.Parse{}
-		statements, err := p.Parser(input)
+		p := services.DataParser{}
+		statements, err := p.Parse(input)
 
 		Expect(err).ToNot(HaveOccurred())
 		Expect(len(statements)).To(Equal(2))
@@ -57,8 +57,8 @@ var _ = Describe("Parser string into statement", func() {
 				"3.12",
 			},
 		}
-		p := services.Parse{}
-		_, err := p.Parser(input)
+		p := services.DataParser{}
+		_, err := p.Parse(input)
 
 		Expect(err).To(HaveOccurred())
 	})
@@ -77,8 +77,8 @@ var _ = Describe("Parser string into statement", func() {
 				"3.12",
 			},
 		}
-		p := services.Parse{}
-		_, err := p.Parser(input)
+		p := services.DataParser{}
+		_, err := p.Parse(input)
 
 		Expect(err).To(HaveOccurred())
 	})
@@ -97,8 +97,8 @@ var _ = Describe("Parser string into statement", func() {
 				"925.12",
 			},
 		}
-		p := services.Parse{}
-		_, err := p.Parser(input)
+		p := services.DataParser{}
+		_, err := p.Parse(input)
 
 		Expect(err).To(HaveOccurred())
 	})
@@ -126,8 +126,8 @@ var _ = Describe("Parser string into statement", func() {
 				"error",
 			},
 		}
-		p := services.Parse{}
-		_, err := p.Parser(input)
+		p := services.DataParser{}
+		_, err := p.Parse(input)
 
 		Expect(err).To(HaveOccurred())
 	})
