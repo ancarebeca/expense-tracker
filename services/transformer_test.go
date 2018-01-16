@@ -1,96 +1,53 @@
 package services_test
 
 import (
-
+	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/ancarebeca/expense-tracker/services"
-	_ "github.com/go-sql-driver/mysql"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var _ = Describe("csv data are transformed into a proper format for the purposes of analysis", func() {
+func Test_transform_normalizeDataModel(t *testing.T) {
+	statements := createStatements()
+	transformer := services.DataTransformer{}
+	stmsNormalized := transformer.Transform(statements)
+	assert.Equal(t, 2, len(stmsNormalized))
+	assert.Equal(t, "2016-01-02", stmsNormalized[1].TransactionDate)
+	assert.Equal(t, "rrr", stmsNormalized[1].TransactionType)
+	assert.Equal(t, "description 2", stmsNormalized[1].TransactionDescription)
+	assert.Equal(t, 19.2, stmsNormalized[1].DebitAmount)
+	assert.Equal(t, 4.0, stmsNormalized[1].CreditAmount)
+	assert.Equal(t, 3.12, stmsNormalized[1].Balance)
+}
 
-	It("transforms csv data into a valid format", func() {
-		input := [][]string{
-			{
-				"Transaction Date",
-				"Transaction Type",
-				"Sort Code",
-				"Account Number",
-				"Transaction Description",
-				"Debit Amount",
-				"Credit Amount",
-				"Balance",
-			},
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"This is a tranSaction DeScription  ",
-				"19.2",
-				"",
-				"925.12",
-			},
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"bla bla",
-				"19.2",
-				"",
-				"925.12",
-			},
-		}
-
-		t := services.DataTransformer{}
-		inputNormalized, err := t.Transform(input)
-		Expect(err).NotTo(HaveOccurred())
-
-		Expect(len(inputNormalized)).To(Equal(2))
-		Expect(inputNormalized[0][0]).To(Equal("2016-07-29"), "Transforms TransactionDate")
-		Expect(inputNormalized[0][4]).To(Equal("this is a transaction description"), "transaction description")
-	})
-
-	It("returns an error when the date is invalid", func() {
-		input := [][]string{
-			{
-				"Transaction Date",
-				"Transaction Type",
-				"Sort Code",
-				"Account Number",
-				"Transaction Description",
-				"Debit Amount",
-				"Credit Amount",
-				"Balance",
-			},
-			{
-				"29-07-2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"This is a tranSaction DeScription  ",
-				"19.2",
-				"",
-				"925.12",
-			},
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"bla bla",
-				"19.2",
-				"",
-				"925.12",
-			},
-		}
-
-
-		t := services.DataTransformer{}
-		_, err := t.Transform(input)
-		Expect(err).To(HaveOccurred())
-	})
-})
-
+func createStatements() []model.Statement {
+	return []model.Statement{
+		{
+			TransactionDate:        "02/01/2006",
+			TransactionType:        "ddd",
+			TransactionDescription: "Description 1",
+			Category:               "category",
+			DebitAmount:            2,
+			CreditAmount:           1,
+			Balance:                4.6,
+		},
+		{
+			TransactionDate:        "02/01/2016",
+			TransactionType:        "rrr",
+			TransactionDescription: "Description 2",
+			Category:               "category 2",
+			DebitAmount:            19.2,
+			CreditAmount:           4.0,
+			Balance:                3.12,
+		},
+		{
+			TransactionDate:        "wrong date",
+			TransactionType:        "rrr",
+			TransactionDescription: "Description 2",
+			Category:               "category 2",
+			DebitAmount:            19.2,
+			CreditAmount:           4.0,
+			Balance:                3.12,
+		},
+	}
+}

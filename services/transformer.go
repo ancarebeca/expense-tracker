@@ -1,7 +1,9 @@
 package services
 
 import (
+	"errors"
 	"fmt"
+	"github.com/ancarebeca/expense-tracker/model"
 	"strings"
 	"time"
 )
@@ -11,37 +13,31 @@ type DataTransformer struct{}
 var layoutInput = "02/01/2006"
 var layoutOutput = "2006-01-02"
 
-//go:generate counterfeiter . Transformer
 type Transformer interface {
-	Transform(data [][]string) ([][]string, error)
+	Transform(statements []model.Statement) []model.Statement
 }
 
-//Todo: This logic is coupled to csv file. Make it generic
-func (t *DataTransformer) Transform(data [][]string) ([][]string, error) {
-	data = append(data[:0], data[0+1:]...)
+func (t *DataTransformer) Transform(statements []model.Statement) []model.Statement {
+	data := []model.Statement{}
 
-	for i := range data {
-
-		transactionDate, err := t.transformDate(data[i][0])
+	for _, s := range statements {
+		date, err := t.transformDate(s.TransactionDate)
 		if err != nil {
-			return nil, err
+			continue
 		}
-
-		data[i][0] = transactionDate
-
-		transactionDescription := t.cleanString(data[i][4])
-		data[i][4] = transactionDescription
+		s.TransactionDate = date
+		s.TransactionDescription = t.cleanString(s.TransactionDescription)
+		data = append(data, s)
 	}
 
-	return data, nil
+	return data
 }
 
 func (t *DataTransformer) transformDate(date string) (string, error) {
 	stringOutput, err := time.Parse(layoutInput, date)
-
 	if err != nil {
-		fmt.Printf("Error parsing date: %s", err.Error())
-		return "", err
+		fmt.Printf("Error parsing transaction date: %s", err.Error())
+		return "", errors.New("Unable to transform date value")
 	}
 	return stringOutput.Format(layoutOutput), nil
 }

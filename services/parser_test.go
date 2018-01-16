@@ -1,134 +1,88 @@
 package services_test
 
 import (
+	"fmt"
 	"github.com/ancarebeca/expense-tracker/services"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var _ = Describe("Parse string into statement", func() {
+func Test_parser_parseInputData(t *testing.T) {
+	p := services.SantanderParser{}
+	stms := p.Parse(getData())
+	fmt.Println(stms)
+	fmt.Println(len(stms))
 
-	It("parser a string statement into a model statement", func() {
+	assert.Equal(t, 2, len(stms))
+	assert.Equal(t, "29/07/2016", stms[0].TransactionDate)
+	assert.Equal(t, "debit_card", stms[0].TransactionType)
+	assert.Equal(t, "Description 1", stms[0].TransactionDescription)
+	assert.Equal(t, 19.2, stms[0].DebitAmount)
+	assert.Equal(t, 4.0, stms[0].CreditAmount)
+	assert.Equal(t, 3.12, stms[0].Balance)
+}
 
-		input := [][]string{
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 1",
-				"19.2",
-				"",
-				"3.12",
-			},
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 2",
-				"19.2",
-				"",
-				"3.12",
-			},
-		}
-
-		p := services.DataParser{}
-		statements, err := p.Parse(input)
-
-		Expect(err).ToNot(HaveOccurred())
-		Expect(len(statements)).To(Equal(2))
-		Expect(statements[0].TransactionDescription).To(Equal("Description 1"))
-		Expect(statements[1].TransactionDescription).To(Equal("Description 2"))
-
-	})
-
-	It("returns an error when debit amount cannot be cast to float", func() {
-
-		input := [][]string{
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 1",
-				"error",
-				"",
-				"3.12",
-			},
-		}
-		p := services.DataParser{}
-		_, err := p.Parse(input)
-
-		Expect(err).To(HaveOccurred())
-	})
-
-	It("returns an error when debit amount cannot be cast to float", func() {
-
-		input := [][]string{
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 1",
-				"error",
-				"",
-				"3.12",
-			},
-		}
-		p := services.DataParser{}
-		_, err := p.Parse(input)
-
-		Expect(err).To(HaveOccurred())
-	})
-
-	It("returns an error when credit amount cannot be cast to float", func() {
-
-		input := [][]string{
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 1",
-				"23",
-				"error",
-				"925.12",
-			},
-		}
-		p := services.DataParser{}
-		_, err := p.Parse(input)
-
-		Expect(err).To(HaveOccurred())
-	})
-	It("returns an error when credit amount cannot be cast to float", func() {
-
-		input := [][]string{
-			{
-				"Transaction Date",
-				"Transaction Type",
-				"Sort Code",
-				"Account Number",
-				"Transaction Description",
-				"Debit Amount",
-				"Credit Amount",
-				"Balance",
-			},
-			{
-				"29/07/2016",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"Description 1",
-				"23",
-				"3",
-				"error",
-			},
-		}
-		p := services.DataParser{}
-		_, err := p.Parse(input)
-
-		Expect(err).To(HaveOccurred())
-	})
-})
+func getData() [][]string {
+	return [][]string{
+		{
+			"Transaction Date",
+			"Transaction Type",
+			"Sort Code",
+			"Account Number",
+			"Transaction Description",
+			"Debit Amount",
+			"Credit Amount",
+			"Balance",
+		},
+		{
+			"29/07/2016",
+			"debit_card",
+			"'444-444-444",
+			"11111",
+			"Description 1",
+			"19.2",
+			"4.0",
+			"3.12",
+		},
+		{
+			"29/07/2017",
+			"credit_card",
+			"'444-4r4-444",
+			"111e1",
+			"Description 2",
+			"1.2",
+			"4.5",
+			"3.22",
+		},
+		{
+			"29/07/2016",
+			"debit_card",
+			"'444-444-444",
+			"11111",
+			"Description 2",
+			"19.2",
+			"4.22",
+			"wrong",
+		},
+		{
+			"29/07/2016",
+			"debit_card",
+			"'444-444-444",
+			"11111",
+			"Description 2",
+			"19.2",
+			"wrong",
+			"3",
+		},
+		{
+			"29/07/2016",
+			"debit_card",
+			"'444-444-444",
+			"11111",
+			"Description 2",
+			"wrong",
+			"4",
+			"3",
+		},
+	}
+}

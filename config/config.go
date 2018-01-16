@@ -2,15 +2,17 @@ package config
 
 import (
 	"fmt"
-	"gopkg.in/yaml.v2"
 	"io/ioutil"
+
+	"gopkg.in/yaml.v2"
 )
 
 type Conf struct {
-	UserDb     string `yaml:"user_db"`
-	PassDb     string `yaml:"pass_db"`
-	Database   string `yaml:"database"`
-	FilePath   string `yaml:"file_path"`
+	UserDb       string `yaml:"user_db"`
+	PassDb       string `yaml:"pass_db"`
+	Database     string `yaml:"database"`
+	FilePath     string `yaml:"file_path"`
+	CategoryPath string `yaml:"category_path"`
 }
 
 func (c *Conf) LoadConfig(path string) error {

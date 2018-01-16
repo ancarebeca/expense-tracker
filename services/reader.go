@@ -3,24 +3,22 @@ package services
 import (
 	"encoding/csv"
 	"fmt"
-	"github.com/ancarebeca/expense-tracker/config"
 	"os"
 )
 
-type CsvReader struct {
-	Conf config.Conf
-}
+type CsvReader struct{}
 
 //go:generate counterfeiter . Reader
 type Reader interface {
-	ReadCsv() ([][]string, error)
+	ReadCsv(f string) ([][]string, error)
 }
 
-func (c *CsvReader) ReadCsv() ([][]string, error) {
-	f, err := os.Open(c.Conf.FilePath)
+func (c *CsvReader) ReadCsv(file string) ([][]string, error) {
+	f, err := os.Open(file)
 
 	if err != nil {
-		fmt.Printf("Error while opening configuration: %s", err.Error())
+		fmt.Printf("Error while opening CSV file: %s", err.Error())
+		return nil, err
 	}
 	defer f.Close()
 

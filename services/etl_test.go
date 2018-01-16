@@ -1,109 +1,123 @@
-package services_test
+package services
 
 import (
+	"database/sql"
+	"fmt"
+
 	"github.com/ancarebeca/expense-tracker/config"
 	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/services"
-	"github.com/ancarebeca/expense-tracker/services/servicesfakes"
+	"github.com/ancarebeca/expense-tracker/repository"
+	_ "github.com/go-sql-driver/mysql"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )
 
-var _ = Describe("Running extractions, transformation and loading process ", func() {
+var _ = Describe("A csv file is processed, transformed and loaded in a database", func() {
+	var (
+		conf config.Conf
+		db   *sql.DB
+	)
 
-	It("runs etl process", func() {
-		conf := config.Conf{
-			FilePath: "../fixtures/valid_csv.csv",
+	BeforeEach(func() {
+		var err error
+		conf.UserDb = "test"
+		conf.PassDb = "test"
+		conf.Database = "test_expenses"
+		conf.FilePath = "../fixtures/csv"
+		conf.CategoryPath = "../fixtures/categoriesTest.yaml"
+
+		dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
+		db, err = sql.Open("mysql", dataSourceName)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	AfterEach(func() {
+		_, err := db.Exec(`TRUNCATE TABLE statements`)
+		Expect(err).NotTo(HaveOccurred())
+	})
+
+	FIt("e2e", func() {
+		r := CsvReader{}
+
+		repository := repository.RepositoryDb{
+			DB: db,
 		}
-		readerFake := &servicesfakes.FakeReader{}
-		transfomerFake := &servicesfakes.FakeTransformer{}
-		parserFake := &servicesfakes.FakeParser{}
-		categorizeFake := &servicesfakes.FakeCategoriesLoader{}
-		loaderFake := &servicesfakes.FakeStatementsLoader{}
+		l := LoadStatements{
+			&repository,
+		}
 
-		etl := services.Etl{
+		t := DataTransformer{}
+		p := SantanderParser{}
+
+		c := Categorize{
+			Categories:   make(map[string]string),
+			CategoryFile: conf.CategoryPath,
+		}
+
+		etl := Etl{
 			conf,
-			readerFake,
-			transfomerFake,
-			parserFake,
-			categorizeFake,
-			loaderFake,
+			&r,
+			&t,
+			&p,
+			&c,
+			&l,
 		}
+		etl.Run()
 
-		expectedOutput := [][]string{
-			{
-				"Transaction Date",
-				"Transaction Type",
-				"Sort Code",
-				"Account Number",
-				"Transaction Description",
-				"Debit Amount",
-				"Credit Amount",
-				"Balance",
-			},
-			{
-				"06/07/2036",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"SuPerMArket  ",
-				"19.2",
-				"",
-				"925.12",
-			},
-		}
+		//query
+		dbStatements := []*model.Statement{}
 
-		transformedOutput := [][]string{
-			{
-				"Transaction Date",
-				"Transaction Type",
-				"Sort Code",
-				"Account Number",
-				"Transaction Description",
-				"Debit Amount",
-				"Credit Amount",
-				"Balance",
-			},
-			{
-				"06-07-2036",
-				"debit_card",
-				"'444-444-444",
-				"11111",
-				"supermarket",
-				"19.2",
-				"",
-				"925.12",
-			},
-		}
-
-		statements := []*model.Statement{
-			{
-				TransactionDate:        "2016-07-29",
-				TransactionType:        "ddd",
-				TransactionDescription: "bla bla bla",
-				Category:               "category",
-				DebitAmount:            2,
-				CreditAmount:           1,
-				Balance:                4.6,
-			},
-		}
-
-		readerFake.ReadCsvReturns(expectedOutput, nil)
-		transfomerFake.TransformReturns(transformedOutput, nil)
-		parserFake.ParseReturns(statements, nil)
-		categorizeFake.CategoriseReturns(statements, nil)
-		err := etl.Run()
+		rows, err := db.Query("SELECT * FROM statements")
 
 		Expect(err).NotTo(HaveOccurred())
-		Expect(readerFake.ReadCsvCallCount()).To(Equal(1))
+		for rows.Next() {
 
-		Expect(parserFake.ParseCallCount()).To(Equal(1))
-		Expect(parserFake.ParseArgsForCall(0)).To(Equal(transformedOutput))
+			var id int
+			var transaction_date string
+			var transaction_type string
+			var sortCode sql.NullString
+			var accountNumber sql.NullString
+			var transaction_description string
+			var debit_amount float64
+			var credit_amount float64
+			var balance float64
+			var category string
 
-		Expect(categorizeFake.CategoriseCallCount()).To(Equal(1))
-		Expect(categorizeFake.CategoriseArgsForCall(0)).To(Equal(statements))
+			err = rows.Scan(
+				&id,
+				&transaction_date,
+				&transaction_type,
+				&sortCode,
+				&accountNumber,
+				&transaction_description,
+				&debit_amount,
+				&credit_amount,
+				&balance,
+				&category,
+			)
+			Expect(err).NotTo(HaveOccurred())
 
-		Expect(loaderFake.LoadCallCount()).To(Equal(1))
-		Expect(loaderFake.LoadArgsForCall(0)).To(Equal(statements))
+			s := model.Statement{
+				TransactionDate:        transaction_date,
+				TransactionType:        transaction_type,
+				TransactionDescription: transaction_description,
+				Category:               category,
+				CreditAmount:           credit_amount,
+				DebitAmount:            debit_amount,
+				Balance:                balance,
+			}
+			dbStatements = append(dbStatements, &s)
+		}
+
+		Expect(len(dbStatements)).To(Equal(36))
+		Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
+		Expect(dbStatements[0].DebitAmount).To(Equal(19.2))
+		Expect(dbStatements[0].Balance).To(Equal(925.12))
+		Expect(dbStatements[0].TransactionDate).To(Equal("2016-07-29"))
+		Expect(dbStatements[0].CreditAmount).To(Equal(float64(0)))
+		Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
+		Expect(dbStatements[1].CreditAmount).To(Equal(float64(90)))
+		Expect(dbStatements[3].Category).To(Equal("bills"))
 	})
+
 })

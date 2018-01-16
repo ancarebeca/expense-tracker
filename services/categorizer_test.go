@@ -1,58 +1,32 @@
 package services_test
 
 import (
-	"github.com/ancarebeca/expense-tracker/services"
-	_ "github.com/go-sql-driver/mysql"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
 	"github.com/ancarebeca/expense-tracker/model"
+	"github.com/ancarebeca/expense-tracker/services"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
-var _ = Describe("Expenses are categorise by description ", func() {
+func Test_categorise_Statements(t *testing.T) {
+	statements := createUncategoriseStatements()
+	categorizer := services.Categorize{
+		Categories:   make(map[string]string),
+		CategoryFile: "../fixtures/categoriesTest.yaml",
+	}
+	stmsNormalized, _ := categorizer.Categorise(statements)
+	assert.Equal(t, 1, len(stmsNormalized))
+	assert.Equal(t, "bills", stmsNormalized[0].Category)
+}
 
-	It("loads categories from yaml file into a map structure", func() {
-		c := services.Categorize{
-			Categories:   make(map[string]string),
-			CategoryFile: "../fixtures/categoriesTest.yaml",
-		}
-		err := c.Load()
-		Expect(err).NotTo(HaveOccurred())
-
-		Expect(c.Categories["virgin"]).To(Equal("bills"))
-		Expect(c.Categories["uber"]).To(Equal("transport"))
-		Expect(c.Categories["sainsburys"]).To(Equal("groceries"))
-	})
-
-	It("returns an error is something goes wrong loading categories", func() {
-		c := services.Categorize{
-			Categories:   make(map[string]string),
-			CategoryFile: "../fixtures/wrong-categoriesTest.yaml",
-		}
-		err := c.Load()
-		Expect(err).To(HaveOccurred())
-	})
-
-	It("categorise statements", func() {
-		c := services.Categorize{
-			Categories:   make(map[string]string),
-			CategoryFile: "../fixtures/categoriesTest.yaml",
-		}
-		statements := []*model.Statement{
-			{
-				TransactionDate:        "2016-07-29",
-				TransactionType:        "ddd",
-				TransactionDescription: "thames water 5191374174",
-				DebitAmount:            2,
-				CreditAmount:           1,
-				Balance:                4.6,
-			},
-		}
-
-		err := c.Load()
-		Expect(err).NotTo(HaveOccurred())
-
-		s, err := c.Categorise(statements)
-		Expect(err).NotTo(HaveOccurred())
-		Expect(s[0].Category).To(Equal("bills"))
-	})
-})
+func createUncategoriseStatements() []model.Statement {
+	return []model.Statement{
+		{
+			TransactionDate:        "2016-07-29",
+			TransactionType:        "ddd",
+			TransactionDescription: "thames water 5191374174",
+			DebitAmount:            2,
+			CreditAmount:           1,
+			Balance:                4.6,
+		},
+	}
+}

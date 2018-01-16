@@ -1,61 +1,98 @@
 package services
 
 import (
-	"strconv"
-	"github.com/ancarebeca/expense-tracker/model"
 	"fmt"
+	"strconv"
+
+	"github.com/ancarebeca/expense-tracker/model"
 )
 
-type DataParser struct {
-}
+const (
+	debitAmountIndex            = 5
+	creditAmountIndex           = 6
+	balanceAmountIndex          = 7
+	transactionDateIndex        = 0
+	transactionTypeIndex        = 1
+	TransactionDescriptionIndex = 4
+)
 
-//go:generate counterfeiter . Parser
+type SantanderParser struct{}
+
 type Parser interface {
-	Parse(data [][]string) ([]*model.Statement, error)
+	Parse(data [][]string) []model.Statement
 }
 
-//Todo: This logic is coupled to csv file. Make it generic
-func (p *DataParser) Parse(data [][]string) ([]*model.Statement, error) {
-	statements := []*model.Statement{}
+func (p *SantanderParser) Parse(data [][]string) []model.Statement {
+	statements := []model.Statement{}
+	data = removeHeader(data)
 
 	for i := range data {
-		debitAmount, err := p.stringToFloat(data[i][5])
+		debit, err := p.getDebitAmount(data[i])
 		if err != nil {
-			return nil, err
+			continue
 		}
-
-		creditAmount, err := p.stringToFloat(data[i][6])
+		credit, err := p.getCreditAmount(data[i])
 		if err != nil {
-			return nil, err
+			continue
 		}
-
-		balanceAmount, err := p.stringToFloat(data[i][7])
+		balance, err := p.getBalanceAmount(data[i])
 		if err != nil {
-			return nil, err
+			continue
 		}
-
-		s := &model.Statement{
-			TransactionDate:        data[i][0],
-			TransactionType:        data[i][1],
-			TransactionDescription: data[i][4],
-			DebitAmount:            debitAmount,
-			CreditAmount:           creditAmount,
-			Balance:                balanceAmount,
+		s := model.Statement{
+			TransactionDate:        data[i][transactionDateIndex],
+			TransactionType:        data[i][transactionTypeIndex],
+			TransactionDescription: data[i][TransactionDescriptionIndex],
+			DebitAmount:            debit,
+			CreditAmount:           credit,
+			Balance:                balance,
 		}
 		statements = append(statements, s)
 	}
 
-	return statements, nil
+	return statements
 }
 
-func (p *DataParser) stringToFloat(value string) (float64, error) {
+func removeHeader(data [][]string) [][]string {
+	data = append(data[:0], data[0+1:]...)
+	return data
+}
+
+func (p *SantanderParser) getDebitAmount(data []string) (float64, error) {
+	debit, err := p.stringToFloat(data[debitAmountIndex])
+	if err != nil {
+		fmt.Println("Error in SantanderParser while casting debit amount to string: %v", err.Error())
+		return 0, err
+	}
+	return debit, nil
+}
+
+func (p *SantanderParser) getCreditAmount(data []string) (float64, error) {
+	credit, err := p.stringToFloat(data[creditAmountIndex])
+	if err != nil {
+		fmt.Println("Error in SantanderParser while casting credit amount to string: %v", err.Error())
+		return 0, err
+	}
+	return credit, nil
+}
+
+func (p *SantanderParser) getBalanceAmount(data []string) (float64, error) {
+	balance, err := p.stringToFloat(data[balanceAmountIndex])
+	if err != nil {
+		fmt.Println("Error in SantanderParser while casting balance amount to string: %v", err.Error())
+		return 0, err
+	}
+	return balance, nil
+}
+
+func (p *SantanderParser) stringToFloat(value string) (float64, error) {
 	if value == "" {
 		value = "0"
 	}
 
 	valueFloat, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		fmt.Printf("Error while casting value %s into float: %s", value, err.Error())
+		fmt.Printf("Error in SantanderParser while casting value %s into float: %s", value, err.Error())
 		return 0, err
 	}
 
