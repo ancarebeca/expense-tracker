@@ -1,14 +1,14 @@
-package services_test
+package etl_test
 
 import (
 	"fmt"
-	"github.com/ancarebeca/expense-tracker/services"
+	"github.com/ancarebeca/expense-tracker/etl"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func Test_parser_parseInputData(t *testing.T) {
-	p := services.SantanderParser{}
+	p := etl.SantanderParser{}
 	stms := p.Parse(getData())
 	fmt.Println(stms)
 	fmt.Println(len(stms))

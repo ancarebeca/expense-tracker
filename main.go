@@ -5,8 +5,8 @@ import (
 	"fmt"
 
 	"github.com/ancarebeca/expense-tracker/config"
+	"github.com/ancarebeca/expense-tracker/etl"
 	"github.com/ancarebeca/expense-tracker/repository"
-	"github.com/ancarebeca/expense-tracker/services"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -23,24 +23,24 @@ func callEtl(conf config.Conf, db *sql.DB) {
 
 	dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
 	db, _ = sql.Open("mysql", dataSourceName)
-	r := services.CsvReader{}
+	r := etl.CsvReader{}
 
 	repository := repository.RepositoryDb{
 		DB: db,
 	}
-	l := services.LoadStatements{
+	l := etl.LoadStatements{
 		&repository,
 	}
 
-	t := services.DataTransformer{}
-	p := services.SantanderParser{}
+	t := etl.DataTransformer{}
+	p := etl.SantanderParser{}
 
-	c := services.Categorize{
+	c := etl.Categorize{
 		Categories:   make(map[string]string),
 		CategoryFile: conf.CategoryPath,
 	}
 
-	etl := services.Etl{
+	etl := etl.Etl{
 		conf,
 		&r,
 		&t,

@@ -1,15 +1,15 @@
-package services_test
+package etl_test
 
 import (
 	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/services"
+	"github.com/ancarebeca/expense-tracker/etl"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func Test_transform_normalizeDataModel(t *testing.T) {
 	statements := createStatements()
-	transformer := services.DataTransformer{}
+	transformer := etl.DataTransformer{}
 	stmsNormalized := transformer.Transform(statements)
 	assert.Equal(t, 2, len(stmsNormalized))
 	assert.Equal(t, "2016-01-02", stmsNormalized[1].TransactionDate)

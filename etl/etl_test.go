@@ -1,4 +1,4 @@
-package services
+package etl
 
 import (
 	"database/sql"
@@ -20,8 +20,8 @@ var _ = Describe("A csv file is processed, transformed and loaded in a database"
 
 	BeforeEach(func() {
 		var err error
-		conf.UserDb = "test"
-		conf.PassDb = "test"
+		conf.UserDb = "user"
+		conf.PassDb = "pass"
 		conf.Database = "test_expenses"
 		conf.FilePath = "../fixtures/csv"
 		conf.CategoryPath = "../fixtures/categoriesTest.yaml"

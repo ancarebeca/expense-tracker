@@ -1,15 +1,15 @@
-package services_test
+package etl_test
 
 import (
 	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/services"
+	"github.com/ancarebeca/expense-tracker/etl"
 	"github.com/stretchr/testify/assert"
 	"testing"
 )
 
 func Test_categorise_Statements(t *testing.T) {
 	statements := createUncategoriseStatements()
-	categorizer := services.Categorize{
+	categorizer := etl.Categorize{
 		Categories:   make(map[string]string),
 		CategoryFile: "../fixtures/categoriesTest.yaml",
 	}
