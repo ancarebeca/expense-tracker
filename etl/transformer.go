@@ -1,11 +1,11 @@
 package etl
 
 import (
-	"errors"
-	"fmt"
-	"github.com/ancarebeca/expense-tracker/model"
 	"strings"
 	"time"
+
+	"github.com/ancarebeca/expense-tracker/model"
+	"github.com/sirupsen/logrus"
 )
 
 type DataTransformer struct{}
@@ -36,8 +36,8 @@ func (t *DataTransformer) Transform(statements []model.Statement) []model.Statem
 func (t *DataTransformer) transformDate(date string) (string, error) {
 	stringOutput, err := time.Parse(layoutInput, date)
 	if err != nil {
-		fmt.Printf("Error parsing transaction date: %s", err.Error())
-		return "", errors.New("Unable to transform date value")
+		logrus.Errorf("Error parsing transaction date: %s", err.Error())
+		return "", err
 	}
 	return stringOutput.Format(layoutOutput), nil
 }

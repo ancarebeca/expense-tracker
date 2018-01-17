@@ -20,11 +20,9 @@ var _ = Describe("A csv file is processed, transformed and loaded in a database"
 
 	BeforeEach(func() {
 		var err error
-		conf.UserDb = "user"
-		conf.PassDb = "pass"
-		conf.Database = "test_expenses"
-		conf.FilePath = "../fixtures/csv"
-		conf.CategoryPath = "../fixtures/categoriesTest.yaml"
+		var path = "../config/config_test.yaml"
+		conf = config.Conf{}
+		conf.LoadConfig(path)
 
 		dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
 		db, err = sql.Open("mysql", dataSourceName)

@@ -1,10 +1,11 @@
 package etl_test
 
 import (
-	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/etl"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/ancarebeca/expense-tracker/etl"
+	"github.com/ancarebeca/expense-tracker/model"
+	"github.com/stretchr/testify/assert"
 )
 
 func Test_transform_normalizeDataModel(t *testing.T) {

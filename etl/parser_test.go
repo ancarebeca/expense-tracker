@@ -1,19 +1,17 @@
 package etl_test
 
 import (
-	"fmt"
+	"testing"
+
 	"github.com/ancarebeca/expense-tracker/etl"
 	"github.com/stretchr/testify/assert"
-	"testing"
 )
 
-func Test_parser_parseInputData(t *testing.T) {
+func Test_parser_dataIntoValidValues(t *testing.T) {
 	p := etl.SantanderParser{}
 	stms := p.Parse(getData())
-	fmt.Println(stms)
-	fmt.Println(len(stms))
-
 	assert.Equal(t, 2, len(stms))
+
 	assert.Equal(t, "29/07/2016", stms[0].TransactionDate)
 	assert.Equal(t, "debit_card", stms[0].TransactionType)
 	assert.Equal(t, "Description 1", stms[0].TransactionDescription)

@@ -1,12 +1,14 @@
-hash: 0eb0ea25cd5e9f741cda755c2ab1c0296e867af79b282b674aea3c4fba4462d0
-updated: 2017-11-21T17:52:22.663687599Z
+hash: 7152c4cb54a14aa5dd9f481db6f6683c899d9c2f5604cec3d4260c1c3382b319
+updated: 2018-01-17T17:27:57.459459713Z
 imports:
 - name: github.com/go-sql-driver/mysql
   version: cd4cb909ce1a31435164be29bf3682031f61539a
 - name: github.com/gocarina/gocsv
   version: 7099e67763c29f812fa2ed7083f32e38be60125a
+- name: github.com/golang/glog
+  version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
 - name: github.com/Sirupsen/logrus
-  version: f006c2ac4710855cf0f916dd6b77acf6b048dc6e
+  version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
 - name: google.golang.org/appengine
   version: 9d8544a6b2c7df9cff240fcf92d7b2f59bc13416
   subpackages:

@@ -1,18 +1,20 @@
 package etl_test
 
 import (
-	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/etl"
-	"github.com/stretchr/testify/assert"
 	"testing"
+
+	"github.com/ancarebeca/expense-tracker/etl"
+	"github.com/ancarebeca/expense-tracker/model"
+	"github.com/stretchr/testify/assert"
 )
 
-func Test_categorise_Statements(t *testing.T) {
+func Test_categorise_statementsUsingConfiguration(t *testing.T) {
 	statements := createUncategoriseStatements()
 	categorizer := etl.Categorize{
 		Categories:   make(map[string]string),
 		CategoryFile: "../fixtures/categoriesTest.yaml",
 	}
+
 	stmsNormalized, _ := categorizer.Categorise(statements)
 	assert.Equal(t, 1, len(stmsNormalized))
 	assert.Equal(t, "bills", stmsNormalized[0].Category)

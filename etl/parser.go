@@ -5,6 +5,7 @@ import (
 	"strconv"
 
 	"github.com/ancarebeca/expense-tracker/model"
+	"github.com/sirupsen/logrus"
 )
 
 const (
@@ -61,7 +62,7 @@ func removeHeader(data [][]string) [][]string {
 func (p *SantanderParser) getDebitAmount(data []string) (float64, error) {
 	debit, err := p.stringToFloat(data[debitAmountIndex])
 	if err != nil {
-		fmt.Println("Error in SantanderParser while casting debit amount to string: %v", err.Error())
+		logrus.Errorf("Error in SantanderParser while casting debit amount to string. Data = %s ", data)
 		return 0, err
 	}
 	return debit, nil
@@ -70,7 +71,7 @@ func (p *SantanderParser) getDebitAmount(data []string) (float64, error) {
 func (p *SantanderParser) getCreditAmount(data []string) (float64, error) {
 	credit, err := p.stringToFloat(data[creditAmountIndex])
 	if err != nil {
-		fmt.Println("Error in SantanderParser while casting credit amount to string: %v", err.Error())
+		logrus.Errorf("Error in SantanderParser while casting credit amount to string. Data = %s ", data)
 		return 0, err
 	}
 	return credit, nil
@@ -79,7 +80,7 @@ func (p *SantanderParser) getCreditAmount(data []string) (float64, error) {
 func (p *SantanderParser) getBalanceAmount(data []string) (float64, error) {
 	balance, err := p.stringToFloat(data[balanceAmountIndex])
 	if err != nil {
-		fmt.Println("Error in SantanderParser while casting balance amount to string: %v", err.Error())
+		logrus.Errorf("Error in SantanderParser while casting balance amount (%s) to string. Data = %s ", data[balanceAmountIndex], data)
 		return 0, err
 	}
 	return balance, nil
@@ -92,7 +93,7 @@ func (p *SantanderParser) stringToFloat(value string) (float64, error) {
 
 	valueFloat, err := strconv.ParseFloat(value, 64)
 	if err != nil {
-		fmt.Printf("Error in SantanderParser while casting value %s into float: %s", value, err.Error())
+		logrus.Debugf(fmt.Sprintf("Error in SantanderParser while casting value = '%s' into float. %s .", value, err.Error))
 		return 0, err
 	}
 

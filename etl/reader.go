@@ -8,7 +8,6 @@ import (
 
 type CsvReader struct{}
 
-//go:generate counterfeiter . Reader
 type Reader interface {
 	ReadCsv(f string) ([][]string, error)
 }
