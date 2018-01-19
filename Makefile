@@ -1,5 +1,8 @@
 all: build run
 
+run:
+	./expense-tracker
+
 install:
 	glide install
 
@@ -19,5 +22,6 @@ functional-test:
 	./services ginkgo -r; 
 
 unit-test:	
-	go test
+	go test ./etl/
+
 

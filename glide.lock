@@ -1,27 +1,36 @@
-hash: 7152c4cb54a14aa5dd9f481db6f6683c899d9c2f5604cec3d4260c1c3382b319
-updated: 2018-01-17T17:27:57.459459713Z
+hash: 08c3877e5a872719c9715f4c10789d40cfb2c04352b23b745355057277443888
+updated: 2018-01-21T20:26:07.657347138Z
 imports:
 - name: github.com/go-sql-driver/mysql
-  version: cd4cb909ce1a31435164be29bf3682031f61539a
+  version: 2cc627ac8defc45d65066ae98f898166f580f9a4
 - name: github.com/gocarina/gocsv
-  version: 7099e67763c29f812fa2ed7083f32e38be60125a
+  version: 45cbb9cde54ea46d800c4fcd1a686949ac6d87a3
 - name: github.com/golang/glog
   version: 23def4e6c14b4da8ac2ed8007337bc5eb5007998
-- name: github.com/Sirupsen/logrus
+- name: github.com/sirupsen/logrus
   version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
+- name: golang.org/x/crypto
+  version: ee41a25c63fb5b74abf2213abb6dee3751e6ac4a
+  subpackages:
+  - ssh/terminal
+- name: golang.org/x/sys
+  version: 2c42eef0765b9837fbdab12011af7830f55f88f0
+  subpackages:
+  - unix
+  - windows
 - name: google.golang.org/appengine
-  version: 9d8544a6b2c7df9cff240fcf92d7b2f59bc13416
+  version: 5bee14b453b4c71be47ec1781b0fa61c2ea182db
   subpackages:
   - cloudsql
 - name: gopkg.in/yaml.v2
-  version: 287cf08546ab5e7e37d55a84f7ed3fd1db036de5
+  version: d670f9405373e636a5a2765eea47fac0c9bc91a4
 testImports:
 - name: github.com/davecgh/go-spew
-  version: 6d212800a42e8ab5c146b8ace3490ee17e5225f9
+  version: ecdeabc65495df2dec95d7c4a4c3e021903035e5
   subpackages:
   - spew
 - name: github.com/onsi/ginkgo
-  version: 652e15c9a27e1cec563e065568014f29eecf6bd9
+  version: 7354a07ba45540aeca339625e5d44714b379e827
   subpackages:
   - config
   - extensions/table
@@ -42,7 +51,7 @@ testImports:
   - reporters/stenographer/support/go-isatty
   - types
 - name: github.com/onsi/gomega
-  version: 1eecca0ba8e6f5ea5a431ce21d3aee2af0b4c90b
+  version: 003f63b7f4cff3fc95357005358af2de0f5fe152
   subpackages:
   - format
   - gbytes
@@ -58,25 +67,21 @@ testImports:
   - matchers/support/goraph/util
   - types
 - name: github.com/pmezard/go-difflib
-  version: d8ed2627bdf02c080bf22230dbb337003b7aba2d
+  version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
   - difflib
 - name: github.com/stretchr/testify
-  version: 69483b4bd14f5845b5a1e55bca19e954e827f1d0
+  version: 87b1dfb5b2fa649f52695dd9eae19abe404a4308
   subpackages:
   - assert
 - name: golang.org/x/net
-  version: 9dfe39835686865bff950a07b394c12a98ddc811
+  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
   subpackages:
   - html
   - html/atom
   - html/charset
-- name: golang.org/x/sys
-  version: 328643532ee3c60c099171d4ce2cad0ca0354ca9
-  subpackages:
-  - unix
 - name: golang.org/x/text
-  version: 88f656faf3f37f690df1a32515b479415e1a6769
+  version: e19ae1496984b1c655b8044a65c0300a3c878dd3
   subpackages:
   - encoding
   - encoding/charmap
