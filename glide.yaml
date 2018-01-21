@@ -3,9 +3,9 @@ import:
 - package: github.com/go-sql-driver/mysql
 - package: github.com/gocarina/gocsv
 - package: gopkg.in/yaml.v2
-- package: github.com/Sirupsen/logrus
-  version: ^1.0.0
 - package: github.com/golang/glog
+- package: github.com/sirupsen/logrus
+  version: ^1.0.4
 testImport:
 - package: github.com/onsi/ginkgo
   subpackages:
