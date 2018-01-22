@@ -3,7 +3,7 @@ go:
  - 1.7
  - 1.8
  - 1.9
-
+dist: trusty
 services:
   - mysql
 
