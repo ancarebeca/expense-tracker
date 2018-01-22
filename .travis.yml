@@ -15,6 +15,7 @@ env:
 
 before_install:
   - mysql -u root < scripts/create_test_db.sql
+  - mysql -u root -e "GRANT ALL PRIVILEGES ON mydb.* TO 'root'@'%';";
 
 install:
   - go get -v github.com/Masterminds/glide
