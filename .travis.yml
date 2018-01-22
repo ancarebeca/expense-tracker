@@ -13,9 +13,10 @@ env:
     - MYSQL_PASS="travis"
     - MYSQL_HOST="localhost"
 
-before_install:
+before_script:
   - mysql -e 'create database test_expenses;'
-  - mysql -u root < scripts/create_test_db.sql
+  - mysql -u root -e "CREATE USER 'root'@'localhost' IDENTIFIED BY 'root';"
+  - mysql -u root -e "GRANT ALL ON test_expenses.* TO 'root'@'localhost';"
 
 install:
   - go get -v github.com/Masterminds/glide
@@ -25,4 +26,5 @@ install:
   - glide install
 
 script:
+ - mysql -u root < scripts/create_test_db.sql
  - go test ./etl/
