@@ -36,6 +36,8 @@ func Test_etl_extractFromCsv_transformData_loadIntoDatabase(t *testing.T) {
 func createEtl() Etl {
 	conf = config.Conf{}
 	conf.LoadConfig(confPath)
+	fmt.Println(dataSourceName)
+
 	dataSourceName = fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
 	db, err = sql.Open("mysql", dataSourceName)
 	if err != nil {
