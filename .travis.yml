@@ -14,7 +14,7 @@ env:
     - MYSQL_HOST="localhost"
 
 before_install:
-  - mysql -u root -e "GRANT SELECT ON mysql.user TO 'root'@'%';"
+  - mysql -e 'create database test_expenses;'
   - mysql -u root < scripts/create_test_db.sql
 
 install:
