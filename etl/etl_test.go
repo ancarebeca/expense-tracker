@@ -3,119 +3,112 @@ package etl
 import (
 	"database/sql"
 	"fmt"
+	"testing"
 
 	"github.com/ancarebeca/expense-tracker/config"
 	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/ancarebeca/expense-tracker/repository"
 	_ "github.com/go-sql-driver/mysql"
-	. "github.com/onsi/ginkgo"
-	. "github.com/onsi/gomega"
+	"github.com/stretchr/testify/assert"
 )
 
-var _ = Describe("A csv file is processed, transformed and loaded in a database", func() {
-	var (
-		conf config.Conf
-		db   *sql.DB
-	)
+var (
+	db *sql.DB
+)
 
-	BeforeEach(func() {
-		var err error
-		var path = "../config/config_test.yaml"
-		conf = config.Conf{}
-		conf.LoadConfig(path)
+func Test_etl(t *testing.T) {
+	conf := config.Conf{}
+	conf.LoadConfig("../config/config_test.yaml")
 
-		dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
-		db, err = sql.Open("mysql", dataSourceName)
-		Expect(err).NotTo(HaveOccurred())
-	})
+	dataSourceName := fmt.Sprintf("%s:%s@/%s?charset=utf8", conf.UserDb, conf.PassDb, conf.Database)
+	db, err := sql.Open("mysql", dataSourceName)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+	r := CsvReader{}
 
-	AfterEach(func() {
-		_, err := db.Exec(`TRUNCATE TABLE statements`)
-		Expect(err).NotTo(HaveOccurred())
-	})
+	repository := repository.RepositoryDb{
+		DB: db,
+	}
+	l := LoadStatements{
+		&repository,
+	}
 
-	FIt("e2e", func() {
-		r := CsvReader{}
+	dt := DataTransformer{}
+	p := SantanderParser{}
 
-		repository := repository.RepositoryDb{
-			DB: db,
-		}
-		l := LoadStatements{
-			&repository,
-		}
+	c := Categorize{
+		Categories:   make(map[string]string),
+		CategoryFile: conf.CategoryPath,
+	}
 
-		t := DataTransformer{}
-		p := SantanderParser{}
+	etl := Etl{
+		conf,
+		&r,
+		&dt,
+		&p,
+		&c,
+		&l,
+	}
+	etl.Run()
 
-		c := Categorize{
-			Categories:   make(map[string]string),
-			CategoryFile: conf.CategoryPath,
-		}
+	//query
+	dbStatements := []*model.Statement{}
 
-		etl := Etl{
-			conf,
-			&r,
-			&t,
-			&p,
-			&c,
-			&l,
-		}
-		etl.Run()
+	rows, err := db.Query("SELECT * FROM statements")
+	if err != nil {
+		fmt.Println(err.Error())
+	}
 
-		//query
-		dbStatements := []*model.Statement{}
+	for rows.Next() {
+		var id int
+		var transaction_date string
+		var transaction_type string
+		var sortCode sql.NullString
+		var accountNumber sql.NullString
+		var transaction_description string
+		var debit_amount float64
+		var credit_amount float64
+		var balance float64
+		var category string
 
-		rows, err := db.Query("SELECT * FROM statements")
-
-		Expect(err).NotTo(HaveOccurred())
-		for rows.Next() {
-
-			var id int
-			var transaction_date string
-			var transaction_type string
-			var sortCode sql.NullString
-			var accountNumber sql.NullString
-			var transaction_description string
-			var debit_amount float64
-			var credit_amount float64
-			var balance float64
-			var category string
-
-			err = rows.Scan(
-				&id,
-				&transaction_date,
-				&transaction_type,
-				&sortCode,
-				&accountNumber,
-				&transaction_description,
-				&debit_amount,
-				&credit_amount,
-				&balance,
-				&category,
-			)
-			Expect(err).NotTo(HaveOccurred())
-
-			s := model.Statement{
-				TransactionDate:        transaction_date,
-				TransactionType:        transaction_type,
-				TransactionDescription: transaction_description,
-				Category:               category,
-				CreditAmount:           credit_amount,
-				DebitAmount:            debit_amount,
-				Balance:                balance,
-			}
-			dbStatements = append(dbStatements, &s)
+		err = rows.Scan(
+			&id,
+			&transaction_date,
+			&transaction_type,
+			&sortCode,
+			&accountNumber,
+			&transaction_description,
+			&debit_amount,
+			&credit_amount,
+			&balance,
+			&category,
+		)
+		if err != nil {
+			fmt.Println(err.Error())
 		}
 
-		Expect(len(dbStatements)).To(Equal(36))
-		Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
-		Expect(dbStatements[0].DebitAmount).To(Equal(19.2))
-		Expect(dbStatements[0].Balance).To(Equal(925.12))
-		Expect(dbStatements[0].TransactionDate).To(Equal("2016-07-29"))
-		Expect(dbStatements[0].CreditAmount).To(Equal(float64(0)))
-		Expect(dbStatements[0].TransactionDescription).To(Equal("supermarket"))
-		Expect(dbStatements[1].CreditAmount).To(Equal(float64(90)))
-		Expect(dbStatements[3].Category).To(Equal("bills"))
-	})
+		s := model.Statement{
+			TransactionDate:        transaction_date,
+			TransactionType:        transaction_type,
+			TransactionDescription: transaction_description,
+			Category:               category,
+			CreditAmount:           credit_amount,
+			DebitAmount:            debit_amount,
+			Balance:                balance,
+		}
+		dbStatements = append(dbStatements, &s)
+	}
+	assert.Equal(t, 36, len(dbStatements))
+	assert.Equal(t, "supermarket", dbStatements[0].TransactionDescription)
+	assert.Equal(t, 19.2, dbStatements[0].DebitAmount)
+	assert.Equal(t, 925.12, dbStatements[0].Balance)
+	assert.Equal(t, "2016-07-29", dbStatements[0].TransactionDate)
+	assert.Equal(t, float64(0), dbStatements[0].CreditAmount)
 
-})
+	_, err = db.Exec(`TRUNCATE TABLE statements`)
+	if err != nil {
+		fmt.Println(err.Error())
+	}
+
+}
