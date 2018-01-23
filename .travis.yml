@@ -3,7 +3,17 @@ go:
  - 1.7
  - 1.8
  - 1.9
- 
+dist: trusty
+services:
+  - mysql
+
+env:
+  global:
+    - MYSQL_USER="travis"
+    
+before_script:
+  - mysql -u root < scripts/create_test_db.sql
+
 install:
   - go get -v github.com/Masterminds/glide
   - go get github.com/sirupsen/logrus

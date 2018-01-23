@@ -1,0 +1,6 @@
+user_db: "travis"
+pass_db: ""
+database: "test_expenses"
+file_path: "../fixtures/csv"
+category_path: "../fixtures/categoriesTest.yaml"
+
