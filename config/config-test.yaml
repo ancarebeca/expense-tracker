@@ -1,0 +1,5 @@
+user_db: "root"
+pass_db: "root"
+database: "test_expenses"
+file_path: "../fixtures/csv/"
+category_path: "../config/categories-test.yaml"
