@@ -4,7 +4,6 @@ import (
 	"io/ioutil"
 	"strings"
 
-	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/sirupsen/logrus"
 	"gopkg.in/yaml.v2"
 )
@@ -12,7 +11,7 @@ import (
 const general = "general"
 
 type CategoriesLoader interface {
-	Categorise(statements []model.Statement) ([]model.Statement, error)
+	Categorise(statements []Statement) ([]Statement, error)
 }
 
 type Categorize struct {
@@ -20,13 +19,13 @@ type Categorize struct {
 	CategoryFile string
 }
 
-func (c *Categorize) Categorise(statements []model.Statement) ([]model.Statement, error) {
+func (c *Categorize) Categorise(statements []Statement) ([]Statement, error) {
 	err := c.loadCategories()
 	if err != nil {
 		return nil, err
 	}
 
-	stms := []model.Statement{}
+	stms := []Statement{}
 	for _, s := range statements {
 		s.Category = c.getCategory(s.TransactionDescription)
 		stms = append(stms, s)

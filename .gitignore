@@ -11,21 +11,17 @@
 *.out
 expense-tracker
 
-# Project-local glide cache, RE: https://github.com/Masterminds/glide/issues/736
+# Project-local glide cache
 .glide/
 
 config/config.yaml
 config/categories.yaml
-config/config_dev.yaml
 
-vendor/*
-
-input/*
 .DS_Store
 .idea
-expense-tracker_suite_test.go
 input/
 vendor/
 TODO
+.vscode/
 
 

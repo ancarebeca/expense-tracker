@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"strconv"
 
-	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/sirupsen/logrus"
 )
 
@@ -20,11 +19,11 @@ const (
 type SantanderParser struct{}
 
 type Parser interface {
-	Parse(data [][]string) []model.Statement
+	Parse(data [][]string) []Statement
 }
 
-func (p *SantanderParser) Parse(data [][]string) []model.Statement {
-	statements := []model.Statement{}
+func (p *SantanderParser) Parse(data [][]string) []Statement {
+	statements := []Statement{}
 	data = removeHeader(data)
 
 	for i := range data {
@@ -40,7 +39,7 @@ func (p *SantanderParser) Parse(data [][]string) []model.Statement {
 		if err != nil {
 			continue
 		}
-		s := model.Statement{
+		s := Statement{
 			TransactionDate:        data[i][transactionDateIndex],
 			TransactionType:        data[i][transactionTypeIndex],
 			TransactionDescription: data[i][TransactionDescriptionIndex],

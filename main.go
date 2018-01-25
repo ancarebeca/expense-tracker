@@ -6,7 +6,6 @@ import (
 
 	"github.com/ancarebeca/expense-tracker/config"
 	"github.com/ancarebeca/expense-tracker/etl"
-	"github.com/ancarebeca/expense-tracker/repository"
 	_ "github.com/go-sql-driver/mysql"
 )
 
@@ -25,7 +24,7 @@ func callEtl(conf config.Conf, db *sql.DB) {
 	db, _ = sql.Open("mysql", dataSourceName)
 	r := etl.CsvReader{}
 
-	repository := repository.RepositoryDb{
+	repository := etl.RepositoryDb{
 		DB: db,
 	}
 	l := etl.LoadStatements{

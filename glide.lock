@@ -1,8 +1,8 @@
-hash: 08c3877e5a872719c9715f4c10789d40cfb2c04352b23b745355057277443888
-updated: 2018-01-21T20:26:07.657347138Z
+hash: 3c9cca04baa6b66e97f2626d843d7a5751c30cadce79296f155ea2fd2ffd6388
+updated: 2018-01-25T20:08:51.773124252Z
 imports:
 - name: github.com/go-sql-driver/mysql
-  version: 2cc627ac8defc45d65066ae98f898166f580f9a4
+  version: bc14601d1bd56421dd60f561e6052c9ed77f9daf
 - name: github.com/gocarina/gocsv
   version: 45cbb9cde54ea46d800c4fcd1a686949ac6d87a3
 - name: github.com/golang/glog
@@ -10,11 +10,11 @@ imports:
 - name: github.com/sirupsen/logrus
   version: d682213848ed68c0a260ca37d6dd5ace8423f5ba
 - name: golang.org/x/crypto
-  version: ee41a25c63fb5b74abf2213abb6dee3751e6ac4a
+  version: 3d37316aaa6bd9929127ac9a527abf408178ea7b
   subpackages:
   - ssh/terminal
 - name: golang.org/x/sys
-  version: 2c42eef0765b9837fbdab12011af7830f55f88f0
+  version: 03467258950d845cd1877eab69461b98e8c09219
   subpackages:
   - unix
   - windows
@@ -29,43 +29,6 @@ testImports:
   version: ecdeabc65495df2dec95d7c4a4c3e021903035e5
   subpackages:
   - spew
-- name: github.com/onsi/ginkgo
-  version: 7354a07ba45540aeca339625e5d44714b379e827
-  subpackages:
-  - config
-  - extensions/table
-  - internal/codelocation
-  - internal/containernode
-  - internal/failer
-  - internal/leafnodes
-  - internal/remote
-  - internal/spec
-  - internal/spec_iterator
-  - internal/specrunner
-  - internal/suite
-  - internal/testingtproxy
-  - internal/writer
-  - reporters
-  - reporters/stenographer
-  - reporters/stenographer/support/go-colorable
-  - reporters/stenographer/support/go-isatty
-  - types
-- name: github.com/onsi/gomega
-  version: 003f63b7f4cff3fc95357005358af2de0f5fe152
-  subpackages:
-  - format
-  - gbytes
-  - gexec
-  - internal/assertion
-  - internal/asyncassertion
-  - internal/oraclematcher
-  - internal/testingtsupport
-  - matchers
-  - matchers/support/goraph/bipartitegraph
-  - matchers/support/goraph/edge
-  - matchers/support/goraph/node
-  - matchers/support/goraph/util
-  - types
 - name: github.com/pmezard/go-difflib
   version: 792786c7400a136282c1664665ae0a8db921c6c2
   subpackages:
@@ -74,27 +37,3 @@ testImports:
   version: 87b1dfb5b2fa649f52695dd9eae19abe404a4308
   subpackages:
   - assert
-- name: golang.org/x/net
-  version: 5ccada7d0a7ba9aeb5d3aca8d3501b4c2a509fec
-  subpackages:
-  - html
-  - html/atom
-  - html/charset
-- name: golang.org/x/text
-  version: e19ae1496984b1c655b8044a65c0300a3c878dd3
-  subpackages:
-  - encoding
-  - encoding/charmap
-  - encoding/htmlindex
-  - encoding/internal
-  - encoding/internal/identifier
-  - encoding/japanese
-  - encoding/korean
-  - encoding/simplifiedchinese
-  - encoding/traditionalchinese
-  - encoding/unicode
-  - internal/tag
-  - internal/utf8internal
-  - language
-  - runes
-  - transform

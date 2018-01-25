@@ -20,7 +20,7 @@ type Etl struct {
 
 func (e Etl) Run() error {
 
-	files, err := e.getFiles(e.Conf.FilePath)
+	files, err := e.getFiles(e.Conf.DirPath)
 	if err != nil {
 		panic(err.Error())
 	}
@@ -51,7 +51,7 @@ func (e Etl) getFiles(dir string) ([]string, error) {
 
 	filepath.Walk(dir, func(path string, info os.FileInfo, err error) error {
 		if !info.IsDir() {
-			n := fmt.Sprintf("%s/%s", e.Conf.FilePath, info.Name())
+			n := fmt.Sprintf("%s/%s", e.Conf.DirPath, info.Name())
 			names = append(names, n)
 
 		}

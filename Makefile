@@ -18,10 +18,7 @@ run:
 clean:
 	rm ./expense-tracker
 
-functional-test:
-	./services ginkgo -r; 
-
-unit-test:	
+test:	
 	go test ./etl/
 
 

@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/ancarebeca/expense-tracker/etl"
-	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -21,8 +20,8 @@ func Test_transform_normalizeDataModel(t *testing.T) {
 	assert.Equal(t, 3.12, stmsNormalized[1].Balance)
 }
 
-func createStatements() []model.Statement {
-	return []model.Statement{
+func createStatements() []etl.Statement {
+	return []etl.Statement{
 		{
 			TransactionDate:        "02/01/2006",
 			TransactionType:        "ddd",

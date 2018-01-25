@@ -4,7 +4,6 @@ import (
 	"testing"
 
 	"github.com/ancarebeca/expense-tracker/etl"
-	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,8 +19,8 @@ func Test_categorise_statementsUsingConfiguration(t *testing.T) {
 	assert.Equal(t, "bills", stmsNormalized[0].Category)
 }
 
-func createUncategoriseStatements() []model.Statement {
-	return []model.Statement{
+func createUncategoriseStatements() []etl.Statement {
+	return []etl.Statement{
 		{
 			TransactionDate:        "2016-07-29",
 			TransactionType:        "ddd",

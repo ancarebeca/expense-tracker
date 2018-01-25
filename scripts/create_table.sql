@@ -1,8 +1,9 @@
 # Create DB
 CREATE DATABASE IF NOT EXISTS `expenses` DEFAULT CHARACTER SET utf8 COLLATE utf8_general_ci;
-USE `expenses`;
 
 # Create Table
+USE `expenses`;
+
 CREATE TABLE IF NOT EXISTS `statements` (
    `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
    `transaction_date` date DEFAULT NULL,
