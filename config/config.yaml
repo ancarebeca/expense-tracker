@@ -1,6 +1,6 @@
 user_db: "user"
 pass_db: "pass"
 database: "database"
-file_path: "bank_statement_path"
+dir_path: "bank_statement_path"
 category_path: "categoriesTest.yaml"
 

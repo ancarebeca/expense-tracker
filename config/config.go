@@ -11,7 +11,7 @@ type Conf struct {
 	UserDb       string `yaml:"user_db"`
 	PassDb       string `yaml:"pass_db"`
 	Database     string `yaml:"database"`
-	FilePath     string `yaml:"file_path"`
+	DirPath      string `yaml:"dir_path"`
 	CategoryPath string `yaml:"category_path"`
 }
 

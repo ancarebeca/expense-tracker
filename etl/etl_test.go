@@ -15,7 +15,7 @@ import (
 var (
 	db             *sql.DB
 	conf           config.Conf
-	confPath       = "../config/config_test.yaml"
+	confPath       = "../config/config-test.yaml"
 	dataSourceName string
 	err            error
 )
