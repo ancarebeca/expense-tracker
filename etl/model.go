@@ -1,4 +1,4 @@
-package model
+package etl
 
 type Statement struct {
 	TransactionDate        string

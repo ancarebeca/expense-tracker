@@ -4,7 +4,6 @@ import (
 	"strings"
 	"time"
 
-	"github.com/ancarebeca/expense-tracker/model"
 	"github.com/sirupsen/logrus"
 )
 
@@ -14,11 +13,11 @@ var layoutInput = "02/01/2006"
 var layoutOutput = "2006-01-02"
 
 type Transformer interface {
-	Transform(statements []model.Statement) []model.Statement
+	Transform(statements []Statement) []Statement
 }
 
-func (t *DataTransformer) Transform(statements []model.Statement) []model.Statement {
-	data := []model.Statement{}
+func (t *DataTransformer) Transform(statements []Statement) []Statement {
+	data := []Statement{}
 
 	for _, s := range statements {
 		date, err := t.transformDate(s.TransactionDate)

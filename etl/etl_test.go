@@ -6,8 +6,6 @@ import (
 	"testing"
 
 	"github.com/ancarebeca/expense-tracker/config"
-	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/repository"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/stretchr/testify/assert"
 )
@@ -46,7 +44,7 @@ func createEtl() Etl {
 
 	r := CsvReader{}
 
-	repository := repository.RepositoryDb{
+	repository := RepositoryDb{
 		DB: db,
 	}
 	l := LoadStatements{
@@ -71,8 +69,8 @@ func createEtl() Etl {
 	}
 }
 
-func getStatementsFromDb() []*model.Statement {
-	dbStatements := []*model.Statement{}
+func getStatementsFromDb() []*Statement {
+	dbStatements := []*Statement{}
 	rows, err := db.Query("SELECT * FROM statements")
 	if err != nil {
 		fmt.Println("Error when getting Statements: ", err.Error())
@@ -108,7 +106,7 @@ func getStatementsFromDb() []*model.Statement {
 			cleanDb()
 		}
 
-		s := model.Statement{
+		s := Statement{
 			TransactionDate:        transaction_date,
 			TransactionType:        transaction_type,
 			TransactionDescription: transaction_description,

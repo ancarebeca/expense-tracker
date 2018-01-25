@@ -1,20 +1,18 @@
 package etl
 
 import (
-	"github.com/ancarebeca/expense-tracker/model"
-	"github.com/ancarebeca/expense-tracker/repository"
 	"github.com/sirupsen/logrus"
 )
 
 type Loader interface {
-	Load(statements []model.Statement)
+	Load(statements []Statement)
 }
 
 type LoadStatements struct {
-	Loader repository.StatementRepository
+	Loader StatementRepository
 }
 
-func (l *LoadStatements) Load(statements []model.Statement) {
+func (l *LoadStatements) Load(statements []Statement) {
 	for _, s := range statements {
 		err := l.Loader.Create(&s)
 		if err != nil {
